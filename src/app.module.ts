@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common"
-import { AppController } from "./app.controller"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { dataSource } from "./database/ormconfig"
+import { GraphqlModule } from "@modules/graphql/graphql.module"
+import { EntityModule } from "@modules/entity"
 
 @Module({
 	imports: [
@@ -15,7 +16,8 @@ import { dataSource } from "./database/ormconfig"
 			keepConnectionAlive: false,
 			verboseRetryLog: false,
 		}),
+		GraphqlModule,
+		EntityModule,
 	],
-	controllers: [AppController],
 })
 export class AppModule {}

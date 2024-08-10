@@ -1,6 +1,6 @@
 import * as path from "path"
 import { DataSource } from "typeorm"
-import { getConfig } from "../configuration"
+import { getConfig } from "@config"
 
 export const dataSource = new DataSource({
 	type: "postgres",
