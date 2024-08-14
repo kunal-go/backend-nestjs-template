@@ -1,32 +1,33 @@
 import { validatePassword } from "@common/utils"
-import { UserEmailService, UserVerificationService } from "@modules/domain/user"
+import { UserVerificationService } from "@modules/domain/user"
+import { UserMobileService } from "@modules/domain/user/user-mobile.service"
+import { RegistrationMode } from "@modules/entity/entities/user/enums"
+import { EntityService } from "@modules/entity/entity.service"
 import { Args, Mutation, Resolver } from "@nestjs/graphql"
 import { UserRegisterV1Response } from "../responses/user-register-v1.response"
-import { RegistrationMode } from "@modules/entity"
-import { EntityService } from "@modules/entity/entity.service"
 
 @Resolver()
-export class EmailAuthMutation {
+export class MobileAuthMutation {
 	constructor(
 		private readonly entity: EntityService,
-		private readonly emailService: UserEmailService,
+		private readonly mobileService: UserMobileService,
 		private readonly verificationService: UserVerificationService,
 	) {}
 
 	@Mutation(() => UserRegisterV1Response)
-	async registerUserWithEmailV1(
+	async registerUserWithMobileV1(
 		@Args("fullName") fullName: string,
 		@Args("password") password: string,
-		@Args("email") email: string,
+		@Args("mobileNo") mobileNo: string,
 	): Promise<UserRegisterV1Response> {
 		validatePassword(password)
 
 		const em = this.entity.getManager()
 		const verificationRequest = await em.transaction(async (em) => {
-			const user = await this.emailService.createUser(em, {
+			const user = await this.mobileService.createUser(em, {
 				fullName,
 				password,
-				email,
+				mobileNo,
 			})
 			return await this.verificationService.createUserVerificationRequest(em, {
 				user,

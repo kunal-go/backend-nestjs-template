@@ -44,18 +44,21 @@ export class UserSessionEntity {
 	@Column({ name: "refresh_at", type: "timestamp", nullable: true })
 	refreshAt: Date | null
 
+	verifySessionKey(refreshTokenKey: string): boolean {
+		if (!this.sessionKeyHash) {
+			return false
+		}
+		return verifyHash(refreshTokenKey, this.sessionKeyHash)
+	}
+
 	get isExpired(): boolean {
 		return this.validTill.getTime() < Date.now()
 	}
 
-	verifySessionKey(sessionKey: string): boolean {
-		return verifyHash(sessionKey, this.sessionKeyHash)
-	}
-
 	init(init: InitPayload) {
-		this.user = Promise.resolve(init.account)
+		this.user = Promise.resolve(init.user)
 		this.ipAddress = init.ipAddress ?? null
-		this.sessionKeyHash = generateHash(init.refreshKey)
+		this.sessionKeyHash = generateHash(init.sessionKey)
 		this.validTill = getValidity(ACCESS_TOKEN_VALIDITY_IN_HOURS, "hour")
 
 		return this
@@ -63,7 +66,7 @@ export class UserSessionEntity {
 }
 
 type InitPayload = {
-	account: UserEntity
+	user: UserEntity
 	ipAddress?: string
-	refreshKey: string
+	sessionKey: string
 }

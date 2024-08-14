@@ -4,12 +4,17 @@ import { EntityManager } from "typeorm"
 
 @Injectable()
 export class UserEmailService {
-	async createUserWithEmail(
+	async createUser(
 		em: EntityManager,
-		payload: { fullName: string; email: string; password: string },
+		payload: { fullName: string; password: string; email: string },
 	): Promise<UserEntity> {
-		await this.checkEmailAvailability(em, payload.email)
-		const account = new UserEntity().initForEmailAuth(payload)
+		const { email, fullName, password } = payload
+		await this.checkAvailabilityByEmail(em, payload.email)
+		const account = new UserEntity().initForEmailAuth({
+			fullName,
+			password,
+			email,
+		})
 		return await em.save(account)
 	}
 
@@ -17,11 +22,11 @@ export class UserEmailService {
 		return await em.findOneBy(UserEntity, { email: email.toLowerCase() })
 	}
 
-	private async checkEmailAvailability(em: EntityManager, email: string) {
-		const userFoundWithEmail = await this.getUserByEmail(em, email)
-		if (userFoundWithEmail) {
+	async checkAvailabilityByEmail(em: EntityManager, email: string) {
+		const user = await this.getUserByEmail(em, email)
+		if (user) {
 			throw new UnprocessableEntityException(
-				"Account already exists with this email",
+				"Email or Mobile number already taken!",
 			)
 		}
 	}
