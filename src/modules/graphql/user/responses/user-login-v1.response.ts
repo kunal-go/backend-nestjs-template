@@ -1,3 +1,5 @@
+import { AuthService } from "@modules/domain/auth"
+import { UserSessionEntity } from "@modules/entity"
 import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql"
 
 @ObjectType("UserLoginV1Response")
@@ -10,4 +12,11 @@ export class UserLoginV1Response {
 
 	@Field(() => GraphQLISODateTime)
 	refreshTokenAfter!: Date
+
+	constructor(
+		authService: AuthService,
+		payload: { session: UserSessionEntity; sessionKey: string },
+	) {
+		return authService.createTokens(payload.session, payload.sessionKey)
+	}
 }

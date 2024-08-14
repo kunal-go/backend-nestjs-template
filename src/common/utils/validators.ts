@@ -7,3 +7,10 @@ export function validatePassword(password: string) {
 		)
 	}
 }
+
+export function validateOtp(otp: string) {
+	const otpRegex = /^[0-9]{6}$/
+	if (!otpRegex.test(otp)) {
+		throw new BadRequestException("Invalid OTP!")
+	}
+}

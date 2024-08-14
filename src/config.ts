@@ -12,6 +12,8 @@ export type Configuration = {
 	POSTGRES_USER: string
 	POSTGRES_PASSWORD: string
 	POSTGRES_DB_NAME: string
+
+	JWT_SECRET: string
 }
 
 export function getOrSetConfiguration() {
@@ -29,6 +31,8 @@ export function getOrSetConfiguration() {
 		POSTGRES_USER: process.env.POSTGRES_USERNAME || "postgres",
 		POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD || "postgres",
 		POSTGRES_DB_NAME: process.env.POSTGRES_DB_NAME || "postgres",
+
+		JWT_SECRET: process.env.JWT_SECERT || "yourmum",
 	}
 	return configuration
 }

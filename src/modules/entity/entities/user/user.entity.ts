@@ -77,10 +77,23 @@ export class UserEntity {
 		this.hashedPassword = generateHash(init.password)
 		return this
 	}
+
+	initForMobileAuth(init: InitPayloadForMobileAuth) {
+		this.fullName = init.fullName
+		this.mobileNo = init.mobileNo
+		this.hashedPassword = generateHash(init.password)
+		return this
+	}
 }
 
 type InitPayloadForEmailAuth = {
 	fullName: string
 	email: string
+	password: string
+}
+
+type InitPayloadForMobileAuth = {
+	fullName: string
+	mobileNo: string
 	password: string
 }
